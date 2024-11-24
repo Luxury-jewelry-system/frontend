@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import Components from 'unplugin-vue-components/vite';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
+import path from 'path';
 
 export default defineConfig({
   plugins: [
@@ -10,4 +11,12 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
   ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'), // 确保 '@' 指向 'src' 目录
+    },
+  },
+  server: {
+    historyApiFallback: true,
+  },
 });
