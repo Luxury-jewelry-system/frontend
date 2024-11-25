@@ -24,9 +24,11 @@
 </template>
 
 <script>
+import { useUserStore } from "@/stores/user"
 import { ref } from "vue";
 import Web3 from "web3";
 import { useRouter } from 'vue-router';
+import { abi, contractAddress } from "@/contracts/registrationContract";
 export default {
     name: "RegisterPage",
     setup() {
@@ -34,6 +36,7 @@ export default {
         const form = ref({
             role: null, // 当前选择的角色
         });
+        const userStore = useUserStore()
 
         const roles = ref([
             { label: "Mining Company", value: "miningCompany" },
@@ -45,28 +48,48 @@ export default {
 
         const walletAddress = ref("");
 
-        const register = async () => {
+        const register = async (address, role) => {
             try {
                 if (!window.ethereum) {
                     alert("MetaMask is not installed. Please install MetaMask and try again.");
                     return;
                 }
 
-                // 使用 Web3.js 连接钱包
-                const web3 = new Web3(window.ethereum);
-
-                // 请求用户授权连接
-                const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-                walletAddress.value = accounts[0]; // 获取第一个账户地址
-
                 if (!form.value.role) {
                     alert("Please select a role before registering!");
                     return;
                 }
 
+                // 使用 Web3.js 连接钱包
+                const web3 = new Web3(window.ethereum);
+
+
+                // 请求用户授权连接
+                const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+                walletAddress.value = accounts[0]; // 获取第一个账户地址
+                console.log('wallet:', walletAddress.value);
+                userStore.setWalletAddress(accounts[0]);
+                userStore.setRole(form.value.role);
+
+
+
+                // 创建合约实例
+                const contract = new web3.eth.Contract(abi, contractAddress);
+                // 调用智能合约的 register 方法
+                const receipt = await contract.methods
+                    .register(walletAddress.value, role)
+                    .send({ from: walletAddress.value }); // 使用当前钱包地址发起交易
+
+                console.log("Transaction receipt:", receipt);
+
+
                 // 模拟角色绑定逻辑（将来可以与智能合约交互）
                 alert(`Registration successful! Wallet: ${walletAddress.value}, Role: ${form.value.role}`);
-                router.push('/customer')
+                if (userStore.role === 'customer') {
+                    router.push('/customer')
+                } else {
+                    router.push('/operate')
+                }
             } catch (error) {
                 console.error(error);
                 alert("Failed to register. Please try again.");

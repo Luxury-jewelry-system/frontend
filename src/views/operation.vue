@@ -1,32 +1,45 @@
 <template>
     <div class="register-page">
         <el-card class="register-card" shadow="hover">
-            <h2 class="welcome-text">Hello Role</h2>
+            <h2 class="welcome-text">Hello  {{ role }}</h2>
             <el-form class="form-content">
                 <el-form-item label="Diamond ID:">
                     <el-input v-model="diamondId" style="width: 240px" placeholder="Please input" clearable />
                 </el-form-item>
                 <el-form-item>
-                    <el-button class="center-button" type="primary">Operate</el-button>
+                    <el-button class="center-button" type="primary"> {{ buttonLabel }}</el-button>
                 </el-form-item>
             </el-form>
-            <!-- <div v-if="walletAddress" class="wallet-info">
-                <p><strong>Wallet Registered:</strong> {{ walletAddress }}</p>
-                <p><strong>Role:</strong> {{ form.role }}</p>
-            </div> -->
         </el-card>
     </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useUserStore } from "@/stores/user";
 export default {
     name: "OperatePage",
     setup() {
-
+        const userStore = useUserStore();
         const diamondId = ref('');
-
+        const role = computed(() => userStore.role);
+        const buttonLabel = computed(() => {
+            switch (role.value) {
+                case "miningCompany":
+                    return "Mine";
+                case "cuttingCompany":
+                    return "Cut";
+                case "qualityControlLab":
+                    return "Engrave";
+                case "jewelryMaker":
+                    return "Sign";
+                default:
+                    return "Operate"; // 默认值
+            }
+        });
         return {
+            role,
+            buttonLabel,
             diamondId
         };
     },

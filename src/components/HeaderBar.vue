@@ -3,11 +3,12 @@
     <div class="logo">Diamond Lifecycle System</div>
     <div class="user-menu">
       <!-- 头像 -->
-      <el-avatar class="avatar" size="medium" @click="toggleDropdown" :src="avatarUrl" />
+      <el-avatar class="avatar" size="medium" @click="toggleDropdown" v-if="address" :src="avatarUrl" />
+      <el-avatar class="avatar" size="medium" @click="toggleDropdown" v-else :src="logoutUrl" />
       <!-- 下拉菜单 -->
       <el-dropdown v-if="showDropdown" class="dropdown-menu" @click="handleMenuClick">
         <div class="dropdown-content">
-          <p><strong>Wallet ID:</strong> {{ walletAddress }}</p>
+          <p><strong>Wallet ID:</strong> {{ address }}</p>
           <el-button type="danger" size="small" @click="logout">
             Logout
           </el-button>
@@ -18,11 +19,14 @@
 </template>
 
 <script>
-import { ref } from "vue";
-
+import { ref,computed } from "vue";
+import { useUserStore } from "@/stores/user"
 export default {
   name: "HeaderBar",
   setup() {
+    const userStore = useUserStore()
+    const address = computed(() => userStore.walletAddress);
+    
     // 模拟用户钱包地址
     const walletAddress = ref("0x1234...ABCD");
 
@@ -31,6 +35,11 @@ export default {
 
     // 用户头像（可以换成动态的）
     const avatarUrl = ref(
+      // "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+      "https://www.minebbs.com/data/avatars/o/79/79220.jpg?1704093399"
+    );
+
+    const logoutUrl = ref(
       "https://cdn-icons-png.flaticon.com/512/149/149071.png"
     );
 
@@ -51,6 +60,8 @@ export default {
       avatarUrl,
       toggleDropdown,
       logout,
+      address,
+      logoutUrl
     };
   },
 };
@@ -102,6 +113,7 @@ export default {
 }
 
 .dropdown-content {
+  word-break:break-all;
   text-align: center;
 }
 
