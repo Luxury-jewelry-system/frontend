@@ -1,18 +1,13 @@
 <template>
     <div class="register-page">
         <el-card class="register-card" shadow="hover">
-            <h2 class="welcome-text">Welcome to FuckDiamond</h2>
+            <h2 class="welcome-text">Welcome to FuckDiamond!</h2>
             <el-form class="form-content" :model="form">
-                <el-form-item label="Select Role">
-                    <el-select v-model="form.role" placeholder="Select your role">
-                        <el-option v-for="role in roles" :key="role.value" :label="role.label" :value="role.value" />
-                    </el-select>
+                <el-form-item>
+                    <el-button class="center-button" type="primary" @click="register">Login</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button class="center-button" type="primary" @click="register">Register</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-link class="center-button" type="info" href="/login">go to login</el-link>
+                    <el-link class="center-button" type="info" href="/">go to register</el-link>
                 </el-form-item>
             </el-form>
             <div v-if="walletAddress" class="wallet-info">
@@ -28,24 +23,13 @@ import { ref } from "vue";
 import Web3 from "web3";
 import { useRouter } from 'vue-router';
 export default {
-    name: "RegisterPage",
+    name: "LoginPage",
     setup() {
         const router = useRouter();
-        const form = ref({
-            role: null, // 当前选择的角色
-        });
-
-        const roles = ref([
-            { label: "Mining Company", value: "miningCompany" },
-            { label: "Cutting Company", value: "cuttingCompany" },
-            { label: "Quality Control Lab", value: "qualityControlLab" },
-            { label: "Jewelry Maker", value: "jewelryMaker" },
-            { label: "Customer", value: "customer" },
-        ]);
 
         const walletAddress = ref("");
 
-        const register = async () => {
+        const login = async () => {
             try {
                 if (!window.ethereum) {
                     alert("MetaMask is not installed. Please install MetaMask and try again.");
@@ -74,10 +58,8 @@ export default {
         };
 
         return {
-            form,
-            roles,
             walletAddress,
-            register,
+            login,
         };
     },
 };
@@ -94,7 +76,7 @@ export default {
 
 .register-card {
     width: 400px;
-    /* padding: 20px 20px 0 20px; */
+    padding: 20px;
 }
 
 .wallet-info {
