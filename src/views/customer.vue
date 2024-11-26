@@ -1,4 +1,4 @@
-<template>
+ <template>
     <div class="main-page">
       <el-main>
         <el-table :data="diamondData" border style="width: 100%">
@@ -20,20 +20,37 @@
               <el-button
                 type="warning"
                 size="small"
-                @click="buyDiamond(scope.row)"
-              >
-              Details
+                @click="dialogTableVisible = true">
+                Details
               </el-button>
               <el-button
                 type="danger"
                 size="small"
                 @click="buyDiamond(scope.row)"
               >
-              Validate
+                Validate
               </el-button>
             </template>
           </el-table-column>
         </el-table>
+        
+        <el-dialog v-model="dialogTableVisible" title="The Life Cycle of the Diamond" width="800">
+          <el-timeline style="max-width: 600px">
+            <el-timeline-item
+              v-for="(activity, index) in activities"
+                :key="index"
+                :icon="activity.icon"
+                :type="activity.type"
+                :color="activity.color"
+                :size="activity.size"
+                :hollow="activity.hollow"
+                :timestamp="activity.timestamp"
+              >
+                {{ activity.content }}
+            </el-timeline-item>
+          </el-timeline>
+        </el-dialog>
+
       </el-main>
     </div>
   </template>
@@ -41,6 +58,7 @@
   <script>
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
+  import { MoreFilled } from '@element-plus/icons-vue'
   export default {
     name: 'Customer',
     setup() {
@@ -59,12 +77,46 @@
         alert(`Buying diamond with ID: ${diamond.uniqueId}`);
         // 购买逻辑
       };
+      
+      const dialogTableVisible = ref(false); // 点击Details打开对话框
+
+      const activities = ref([  // 溯源信息
+      {
+        content: 'Mining the diamond by mining company',
+        timestamp: '2024-04-12 20:46',
+        size: 'large',
+        type: 'primary',
+        icon: MoreFilled,
+      },
+      {
+        content: 'Cutting and polishing by cutting company',
+        timestamp: '2024-05-02 19:00',
+        color: '#0bbd87',
+      },
+      {
+        content: 'Controlling quality and laser engraving of unique ID by grading lab',
+        timestamp: '2024-05-07 10:24',
+        size: 'large',
+      },
+      {
+        content: 'Entering possession of the jewelry maker',
+        timestamp: '2024-06-12 22:16',
+        type: 'primary',
+        hollow: true,
+      },
+      {
+        content: 'Designing and inlaying the diamond into a jewelry',
+        timestamp: '2024-08-29 14:26',
+      },
+      ]);
   
       return {
         walletAddress,
         diamondData,
         logout,
         buyDiamond,
+        dialogTableVisible,
+        activities,
       };
     },
   };
@@ -83,4 +135,9 @@
     padding: 70px 120px;
   }
   </style>
-  
+
+
+
+
+
+
