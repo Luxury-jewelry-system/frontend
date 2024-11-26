@@ -28,7 +28,7 @@ import { useUserStore } from "@/stores/user"
 import { ref } from "vue";
 import Web3 from "web3";
 import { useRouter } from 'vue-router';
-import { abi, contractAddress } from "@/contracts/registrationContract";
+import { abi, contractAddress } from "@/contracts/index";
 export default {
     name: "RegisterPage",
     setup() {
@@ -48,7 +48,7 @@ export default {
 
         const walletAddress = ref("");
 
-        const register = async (address, role) => {
+        const register = async () => {
             try {
                 if (!window.ethereum) {
                     alert("MetaMask is not installed. Please install MetaMask and try again.");
@@ -71,17 +71,17 @@ export default {
                 userStore.setWalletAddress(accounts[0]);
                 userStore.setRole(form.value.role);
 
-
-
                 // 创建合约实例
                 const contract = new web3.eth.Contract(abi, contractAddress);
+                console.log(abi, contractAddress)
+                const networkId = await web3.eth.net.getId();
+                console.log("Connected Network ID:", networkId);
                 // 调用智能合约的 register 方法
                 const receipt = await contract.methods
-                    .register(walletAddress.value, role)
+                    .registerUser(form.value.role)
                     .send({ from: walletAddress.value }); // 使用当前钱包地址发起交易
 
                 console.log("Transaction receipt:", receipt);
-
 
                 // 模拟角色绑定逻辑（将来可以与智能合约交互）
                 alert(`Registration successful! Wallet: ${walletAddress.value}, Role: ${form.value.role}`);

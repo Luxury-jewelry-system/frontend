@@ -14,7 +14,7 @@ export const useUserStore = defineStore("user", {
     },
   },
   persist: {
-    // enabled: true, // 启用持久化
+    enabled: false, // 启用持久化
     strategies: [
       {
         key: "user", // 存储的 key

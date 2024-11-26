@@ -22,11 +22,13 @@
 import { ref } from "vue";
 import Web3 from "web3";
 import { useRouter } from 'vue-router';
+import { useUserStore } from "@/stores/user"
+import { abi, contractAddress } from "@/contracts/index";
 export default {
     name: "LoginPage",
     setup() {
         const router = useRouter();
-
+        const userStore = useUserStore()
         const walletAddress = ref("");
 
         const login = async () => {
@@ -42,6 +44,17 @@ export default {
                 // 请求用户授权连接
                 const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
                 walletAddress.value = accounts[0]; // 获取第一个账户地址
+                userStore.setWalletAddress(accounts[0]);
+
+                // 创建合约实例
+                const contract = new web3.eth.Contract(abi, contractAddress);
+                // 调用智能合约的 register 方法
+                const receipt = await contract.methods
+                    .getUser(walletAddress.value)
+                    .send({ from: walletAddress.value }); // 使用当前钱包地址发起交易
+
+                console.log("Transaction receipt:", receipt);
+
 
                 if (!form.value.role) {
                     alert("Please select a role before registering!");
