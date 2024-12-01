@@ -1,7 +1,7 @@
 <template>
     <div class="register-page">
         <el-card class="register-card" shadow="hover">
-            <h2 class="welcome-text">Welcome to FuckDiamond</h2>
+            <h2 class="welcome-text">Welcome to HAHADiamond</h2>
             <el-form class="form-content" :model="form">
                 <el-form-item label="Select Role">
                     <el-select v-model="form.role" placeholder="Select your role">
@@ -61,15 +61,14 @@ export default {
                 }
 
                 // 使用 Web3.js 连接钱包
-                const web3 = new Web3(window.ethereum);
+                const web3 = new Web3("http://127.0.0.1:8545");
 
 
                 // 请求用户授权连接
                 const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
                 walletAddress.value = accounts[0]; // 获取第一个账户地址
                 console.log('wallet:', walletAddress.value);
-                userStore.setWalletAddress(accounts[0]);
-                userStore.setRole(form.value.role);
+                
 
                 // 创建合约实例
                 const contract = new web3.eth.Contract(abi, contractAddress);
@@ -80,6 +79,9 @@ export default {
                 const receipt = await contract.methods
                     .registerUser(form.value.role)
                     .send({ from: walletAddress.value }); // 使用当前钱包地址发起交易
+
+                userStore.setWalletAddress(accounts[0]);
+                userStore.setRole(form.value.role);
 
                 console.log("Transaction receipt:", receipt);
 

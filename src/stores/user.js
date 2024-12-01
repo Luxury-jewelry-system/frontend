@@ -14,11 +14,11 @@ export const useUserStore = defineStore("user", {
     },
   },
   persist: {
-    enabled: false, // 启用持久化
+    enabled: true, // 启用持久化
     strategies: [
       {
         key: "user", // 存储的 key
-        storage: sessionStorage, // 存储位置：localStorage 或 sessionStorage
+        storage: localStorage, // 存储位置：localStorage 或 sessionStorage
       },
     ],
   },

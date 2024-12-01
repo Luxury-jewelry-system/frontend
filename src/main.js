@@ -14,9 +14,7 @@ const app = createApp(App);
 const pinia = createPinia();
 
 // 配置 Pinia 持久化插件
-pinia.use(piniaPluginPersistedstate, {
-  storage: window.sessionStorage, // 使用 sessionStorage
-});
+pinia.use(piniaPluginPersistedstate);
 
 // 使用插件
 app.use(pinia);
